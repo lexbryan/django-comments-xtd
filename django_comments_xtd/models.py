@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import F, Max, Min, Q
 from django.db.transaction import atomic
 from django.contrib.contenttypes.models import ContentType
-from django.core import signing
+from django.core import signing, validators
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 
@@ -260,6 +260,10 @@ class BlackListedDomain(models.Model):
 
     def __str__(self):
         return self.domain
+    
+    def clean(self):
+        check_url = validators.URLValidator()
+        check_url(self.domain)
 
     class Meta:
         ordering = ('domain',)
